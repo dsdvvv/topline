@@ -84,10 +84,18 @@ export default {
     login () {
       //   console.log(this.$refs.box)
     //   eslint-disable-next-line no-unused-expressions
-      this.$refs.formObj.validate(function (issuccess) {
+      this.$refs.formObj.validate((issuccess) => {
         if (issuccess) {
           //   如果为true调用接口登录
-
+          this.$axios({
+            url: '/authorizations',
+            data: this.loginForm,
+            method: 'post'
+          }).then(result => {
+            // console.log(result.data.data.token)
+            // 将token值存到本地
+            window.localStorage.setItem('user-token', result.data.data.token)
+          })
         }
       })
     }
