@@ -96,7 +96,7 @@ export default {
             // 将token值存到本地
             window.localStorage.setItem('user-token', result.data.data.token)
             // 登录成功跳转到主页
-            this.$router.push('/home')
+            this.$router.push('/')
           }).catch(() => {
             //   登录失败提示
             this.$message({
