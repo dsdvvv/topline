@@ -5,6 +5,8 @@ import login from '@/views/login/login.vue'
 import Home from '@/views/home' // @指向src目录
 import ArtiCle from '@/views/article' // 文章列表
 import PubLish from '@/views/publish' // 发表文章
+import NProgress from 'nprogress'
+
 Vue.use(VueRouter)
 
 const routes = [{
@@ -48,6 +50,8 @@ const router = new VueRouter({
   判断用户的登陆状态(本地token),如果有就通过,没有就跳转至登录页(login)
 */
 router.beforeEach((to, from, next) => {
+  // 开启顶部导航进度条
+  NProgress.start()
   console.log('所有页面都要经过这里')
   // console.log(to)
   // 1.如果访问的为登录页直接放行
@@ -65,7 +69,13 @@ router.beforeEach((to, from, next) => {
   } else {
     // 2.3不存在token,跳转登录页
     next('/login')
+    NProgress.done()
   }
+})
+// 路由导航结束以后触发的函数
+router.afterEach((to, from) => {
+  // 结束顶部导航进度条
+  NProgress.done()
 })
 
 export default router

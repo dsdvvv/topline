@@ -47,18 +47,22 @@ export default {
       loginRules: {
         mobile: [
           {
-            required: true, message: '请输入您的手机号'
+            required: true,
+            message: '请输入您的手机号'
           },
           {
-            pattern: /^1[34578]\d{9}$/, message: '请输入正确的手机号'
+            pattern: /^1[34578]\d{9}$/,
+            message: '请输入正确的手机号'
           }
         ],
         code: [
           {
-            required: true, message: '请输入验证码'
+            required: true,
+            message: '请输入验证码'
           },
           {
-            pattern: /^\d{6}$/, message: '请输入正确的验证码'
+            pattern: /^\d{6}$/,
+            message: '请输入正确的验证码'
           }
         ],
         checked: [
@@ -83,27 +87,29 @@ export default {
   methods: {
     login () {
       //   console.log(this.$refs.box)
-    //   eslint-disable-next-line no-unused-expressions
-      this.$refs.formObj.validate((issuccess) => {
+      //   eslint-disable-next-line no-unused-expressions
+      this.$refs.formObj.validate(issuccess => {
         if (issuccess) {
           //   如果为true调用接口登录
           this.$axios({
             url: '/authorizations',
             data: this.loginForm,
             method: 'post'
-          }).then(result => {
-            // console.log(result.data.data.token)
-            // 将token值存到本地
-            window.localStorage.setItem('user-token', result.data.data.token)
-            // 登录成功跳转到主页
-            this.$router.push('/')
-          }).catch(() => {
-            //   登录失败提示
-            this.$message({
-              type: 'error',
-              message: '手机号或验证码错误'
-            })
           })
+            .then(result => {
+              // console.log(result.data.data.token)
+              // 将token值存到本地
+              window.localStorage.setItem('user-token', result.data.data.token)
+              // 登录成功跳转到主页
+              this.$router.push('/')
+            })
+            .catch(() => {
+              //   登录失败提示
+              this.$message({
+                type: 'error',
+                message: '手机号或验证码错误'
+              })
+            })
         }
       })
     }
