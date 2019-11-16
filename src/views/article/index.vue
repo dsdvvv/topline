@@ -7,12 +7,14 @@
       <!-- 卡片内容 -->
       <el-form ref="form" :model="filterForm" label-width="80px">
         <el-form-item label="文章状态">
+            <!-- 单选框组会将选中的radio的label同步给绑定的数据 -->
           <el-radio-group v-model="filterForm.status">
-            <el-radio label="全部"></el-radio>
-            <el-radio label="草稿"></el-radio>
-            <el-radio label="待审核"></el-radio>
-            <el-radio label="审核通过"></el-radio>
-            <el-radio label="审核失败"></el-radio>
+            <el-radio :label="null">全部</el-radio>
+            <el-radio label="0">草稿</el-radio>
+            <el-radio label="1">待审核</el-radio>
+            <el-radio label="2">审核通过</el-radio>
+            <el-radio label="3">审核失败</el-radio>
+            <el-radio label="4">已删除</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="频道列表">
@@ -25,13 +27,14 @@
           <el-date-picker
             v-model="rangeDate"
             type="monthrange"
-            range-separator="至"
+            range-separator="——"
             start-placeholder="开始月份"
             end-placeholder="结束月份"
           ></el-date-picker>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary">查询</el-button>
+            <!-- 点击查询按钮重新发送请求获取筛选的数据,重新获取的数据从第一页开始 -->
+          <el-button type="primary" @click="loadArticles(1)">查询</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -99,7 +102,7 @@ export default {
   data () {
     return {
       filterForm: {
-        status: '',
+        status: null,
         channel_id: '',
         begin_pubdata: '',
         end_pubdata: ''
@@ -173,7 +176,20 @@ export default {
         // Query参数使用params传递
         params: {
           page, // 页码(简写方式,本来为: page:page)
-          per_page: 10 // 每页大小(默认十条)
+          per_page: 10, // 每页大小(默认十条)
+          /*
+            status:(文章状态)
+            0:草稿
+            1:待审核
+            2:审核通过
+            3:审核失败
+            4:已删除
+            默认为全部
+            */
+          status: this.filterForm.status
+          //   channel_id, // 频道id
+          //   begin_pubdata, // 起始时间
+          //   end_pubdata // 结束时间
         }
       })
         .then(result => {
