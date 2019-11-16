@@ -37,6 +37,7 @@
             range-separator="——"
             start-placeholder="开始月份"
             end-placeholder="结束月份"
+            value-format="yyyy-MM-dd"
           ></el-date-picker>
         </el-form-item>
         <el-form-item>
@@ -110,11 +111,11 @@ export default {
     return {
       filterForm: {
         status: null,
-        channel_id: null,
-        begin_pubdata: '',
-        end_pubdata: ''
+        channel_id: null
+        // begin_pubdata: '',
+        // end_pubdata: ''
       },
-      rangeDate: '',
+      rangeDate: [], // 日期范围
       articles: [], // 定义数组接收接口返回的数据
       articleStatus: '',
       articlesStatus: [
@@ -195,10 +196,9 @@ export default {
             默认为全部
             */
           status: this.filterForm.status,
-          //   channel_id, // 频道id
-          //   begin_pubdata, // 起始时间
-          //   end_pubdata // 结束时间
-          channel_id: this.filterForm.channel_id // 频道id
+          channel_id: this.filterForm.channel_id, // 频道id
+          begin_pubdata: this.rangeDate ? this.rangeDate[0] : null, // 起始时间
+          end_pubdata: this.rangeDate ? this.rangeDate[1] : null // 结束时间
         }
       })
         .then(result => {
@@ -227,12 +227,14 @@ export default {
       this.$axios({
         method: 'GET',
         url: '/channels'
-      }).then(result => {
-        // console.log(result)
-        this.channels = result.data.data.channels
-      }).catch(error => {
-        console.log('获取数据失败:' + error)
       })
+        .then(result => {
+          // console.log(result)
+          this.channels = result.data.data.channels
+        })
+        .catch(error => {
+          console.log('获取数据失败:' + error)
+        })
     }
   },
   created () {
