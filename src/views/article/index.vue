@@ -43,7 +43,14 @@
       <!-- 表格组件,data表格的数组,要求是数组
       表格组件会使用data数据,在内部自己进行遍历
       -->
-      <el-table :data="articles" style="width: 100%">
+      <el-table
+        :data="articles"
+        style="width: 100%"
+        v-loading="loading"
+        element-loading-text="拼命加载中"
+        element-loading-spinner="el-icon-loading"
+        element-loading-background="rgba(0, 0, 0, 0.8)"
+      >
         <el-table-column prop="date" label="封面" width="180">
           <template slot-scope="scope">
             <img width="50" :src="scope.row.cover.images[0]" alt />
@@ -74,12 +81,14 @@
     total:用来指定一共有多少条数据
     prev(上一页), pager(页码), next(下一页)
     current-change事件:改变页码都会触发该事件
+    disabled:禁用分页(当loading运行时,禁止用户点击分页)
     -->
     <el-pagination
       background
       layout="prev, pager, next"
       :total="totalCount"
       @current-change="onPageChange"
+      :disabled="loading"
     ></el-pagination>
   </div>
 </template>
@@ -142,14 +151,17 @@ export default {
           address: '上海市普陀区金沙江路 1516 弄'
         }
       ],
-      totalCount: 0 // 分页功能动态数据
+      totalCount: 0, // 分页功能动态数据
+      loading: true // table表格的loading状态
     }
   },
   methods: {
-    //   请求文章列表数据
+    // 请求文章列表数据
     // 如果传递了page就是用传递的,如果没传递默认为1
     loadArticles (page = 1) {
-      //   除了login不需要token,其他所有的接口都需要提供token才可以请求
+      // 加载loading
+      this.loading = true
+      // 除了login不需要token,其他所有的接口都需要提供token才可以请求
       // 否则会出现401错误(后端要求吧token放到请求头中)
       const token = window.localStorage.getItem('user-token')
       this.$axios({
@@ -174,10 +186,14 @@ export default {
         .catch(error => {
           console.log('获取数据失败' + error)
         })
+        .finally(() => {
+          // finally:无论成功或失败,都会执行
+          this.loading = false
+        })
     },
     // 分页功能
     onPageChange (page) {
-      console.log(page)
+      // console.log(page)
       // 请求加载指定页面的文章列表
       this.loadArticles(page)
     }
