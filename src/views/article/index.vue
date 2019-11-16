@@ -7,7 +7,7 @@
       <!-- 卡片内容 -->
       <el-form ref="form" :model="filterForm" label-width="80px">
         <el-form-item label="文章状态">
-            <!-- 单选框组会将选中的radio的label同步给绑定的数据 -->
+          <!-- 单选框组会将选中的radio的label同步给绑定的数据 -->
           <el-radio-group v-model="filterForm.status">
             <el-radio :label="null">全部</el-radio>
             <el-radio label="0">草稿</el-radio>
@@ -18,9 +18,16 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="频道列表">
-          <el-select placeholder="请选择活动区域" v-model="filterForm.channel_id">
-            <el-option label="区域一" value="shanghai"></el-option>
-            <el-option label="区域二" value="beijing"></el-option>
+          <!-- 下拉列表会把选中的option的value同步导数据中 -->
+          <el-select placeholder="请选择频道" v-model="filterForm.channel_id">
+            <!-- 所有频道 -->
+            <el-option label="所有频道" :value="null"></el-option>
+            <el-option
+              :label="channel.name"
+              :value="channel.id"
+              v-for="channel in channels"
+              :key="channel.id"
+            ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="时间选择">
@@ -33,7 +40,7 @@
           ></el-date-picker>
         </el-form-item>
         <el-form-item>
-            <!-- 点击查询按钮重新发送请求获取筛选的数据,重新获取的数据从第一页开始 -->
+          <!-- 点击查询按钮重新发送请求获取筛选的数据,重新获取的数据从第一页开始 -->
           <el-button type="primary" @click="loadArticles(1)">查询</el-button>
         </el-form-item>
       </el-form>
@@ -103,7 +110,7 @@ export default {
     return {
       filterForm: {
         status: null,
-        channel_id: '',
+        channel_id: null,
         begin_pubdata: '',
         end_pubdata: ''
       },
@@ -155,7 +162,8 @@ export default {
         }
       ],
       totalCount: 0, // 分页功能动态数据
-      loading: true // table表格的loading状态
+      loading: true, // table表格的loading状态
+      channels: [] // 存储频道列表
     }
   },
   methods: {
@@ -186,10 +194,11 @@ export default {
             4:已删除
             默认为全部
             */
-          status: this.filterForm.status
+          status: this.filterForm.status,
           //   channel_id, // 频道id
           //   begin_pubdata, // 起始时间
           //   end_pubdata // 结束时间
+          channel_id: this.filterForm.channel_id // 频道id
         }
       })
         .then(result => {
@@ -212,11 +221,25 @@ export default {
       // console.log(page)
       // 请求加载指定页面的文章列表
       this.loadArticles(page)
+    },
+    // 频道列表功能
+    loadChannels () {
+      this.$axios({
+        method: 'GET',
+        url: '/channels'
+      }).then(result => {
+        // console.log(result)
+        this.channels = result.data.data.channels
+      }).catch(error => {
+        console.log('获取数据失败:' + error)
+      })
     }
   },
   created () {
     //   页面初始化加载第一页数据
     this.loadArticles(1)
+    // 加载频道列表
+    this.loadChannels()
   }
 }
 </script>
