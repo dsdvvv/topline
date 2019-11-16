@@ -45,28 +45,42 @@
       -->
       <el-table :data="articles" style="width: 100%">
         <el-table-column prop="date" label="封面" width="180">
-            <template slot-scope="scope">
-                <img width="50" :src="scope.row.cover.images[0]" alt="">
-            </template>
+          <template slot-scope="scope">
+            <img width="50" :src="scope.row.cover.images[0]" alt />
+          </template>
         </el-table-column>
         <el-table-column prop="title" label="标题" width="180"></el-table-column>
         <el-table-column prop="address" label="状态">
-            <template slot-scope="scope">
-                <el-tag
-                :type="articleStatus[scope.row.status]"
-                >{{ articlesStatus[scope.row.status].label }}
-                </el-tag>
-            </template>
+          <template slot-scope="scope">
+            <el-tag
+              :type="articleStatus[scope.row.status]"
+            >{{ articlesStatus[scope.row.status].label }}</el-tag>
+          </template>
         </el-table-column>
         <el-table-column prop="pubdate" label="发布日期"></el-table-column>
         <el-table-column prop="address" label="操作">
-            <template>
-                <el-button type="danger" size="mini">编辑</el-button>
-                <el-button type="primary" size="mini">删除</el-button>
-            </template>
+          <template>
+            <el-button type="primary" size="mini">编辑</el-button>
+            <el-button type="danger" size="mini">删除</el-button>
+          </template>
         </el-table-column>
       </el-table>
     </el-card>
+
+    <!-- 分页
+    默认每页十条
+    background:背景色
+    layout:用来控制布局
+    total:用来指定一共有多少条数据
+    prev(上一页), pager(页码), next(下一页)
+    current-change事件:改变页码都会触发该事件
+    -->
+    <el-pagination
+      background
+      layout="prev, pager, next"
+      :total="totalCount"
+      @current-change="onPageChange"
+    ></el-pagination>
   </div>
 </template>
 
@@ -92,13 +106,16 @@ export default {
         {
           type: 'warning',
           label: '待审核'
-        }, {
+        },
+        {
           type: 'success',
           label: '审核通过'
-        }, {
+        },
+        {
           type: 'danger',
           label: '审核失败'
-        }, {
+        },
+        {
           type: 'info',
           label: '已删除'
         }
@@ -124,11 +141,14 @@ export default {
           name: '王小虎',
           address: '上海市普陀区金沙江路 1516 弄'
         }
-      ]
+      ],
+      totalCount: 0 // 分页功能动态数据
     }
   },
   methods: {
-    loadArticles () {
+    //   请求文章列表数据
+    // 如果传递了page就是用传递的,如果没传递默认为1
+    loadArticles (page = 1) {
       //   除了login不需要token,其他所有的接口都需要提供token才可以请求
       // 否则会出现401错误(后端要求吧token放到请求头中)
       const token = window.localStorage.getItem('user-token')
@@ -137,19 +157,34 @@ export default {
         url: '/articles',
         headers: {
           Authorization: `Bearer ${token}`
+        },
+        // Query参数使用params传递
+        params: {
+          page, // 页码(简写方式,本来为: page:page)
+          per_page: 10 // 每页大小(默认十条)
         }
       })
         .then(result => {
-          console.log(result)
+          //   console.log(result)
+          //   更新文章列表数组
           this.articles = result.data.data.results
+          //   更新总记录数
+          this.totalCount = result.data.data.total_count
         })
         .catch(error => {
           console.log('获取数据失败' + error)
         })
+    },
+    // 分页功能
+    onPageChange (page) {
+      console.log(page)
+      // 请求加载指定页面的文章列表
+      this.loadArticles(page)
     }
   },
   created () {
-    this.loadArticles()
+    //   页面初始化加载第一页数据
+    this.loadArticles(1)
   }
 }
 </script>
