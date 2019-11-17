@@ -33,10 +33,10 @@
         <el-form-item label="时间选择">
           <el-date-picker
             v-model="rangeDate"
-            type="monthrange"
+            type="daterange"
             range-separator="——"
-            start-placeholder="开始月份"
-            end-placeholder="结束月份"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
             value-format="yyyy-MM-dd"
           ></el-date-picker>
         </el-form-item>
@@ -77,9 +77,9 @@
         </el-table-column>
         <el-table-column prop="pubdate" label="发布日期"></el-table-column>
         <el-table-column prop="address" label="操作">
-          <template>
+          <template slot-scope="scope">
             <el-button type="primary" size="mini">编辑</el-button>
-            <el-button type="danger" size="mini">删除</el-button>
+            <el-button type="danger" size="mini" @click="onDelete(scope.row.id)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -164,7 +164,8 @@ export default {
       ],
       totalCount: 0, // 分页功能动态数据
       loading: true, // table表格的loading状态
-      channels: [] // 存储频道列表
+      channels: [], // 存储频道列表
+      page: 1 // 存储当前页码
     }
   },
   methods: {
@@ -219,6 +220,8 @@ export default {
     // 分页功能
     onPageChange (page) {
       // console.log(page)
+      //   记录当前页码(用于删除功能)
+      this.page = page
       // 请求加载指定页面的文章列表
       this.loadArticles(page)
     },
@@ -234,6 +237,26 @@ export default {
         })
         .catch(error => {
           console.log('获取数据失败:' + error)
+        })
+    },
+    // 删除功能
+    onDelete (articleId) {
+      console.log(articleId)
+      this.$axios({
+        method: 'DELETE',
+        // 接口文档中的:target为一个路径参数(动态),不要写:
+        url: `/articles/${articleId}`,
+        headers: {
+          Authorization: `Bearer ${window.localStorage.getItem('user-token')}`
+        }
+      })
+        .then(result => {
+          // console.log(result)
+          // 删除成功,重新加载当前页码文章列表
+          this.loadArticles(this.page)
+        })
+        .catch(error => {
+          console.log('删除失败:' + error)
         })
     }
   },
