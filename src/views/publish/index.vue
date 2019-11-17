@@ -18,12 +18,17 @@
           <el-radio label="无图"></el-radio>
           <el-radio label="自动"></el-radio>
         </el-radio-group>
-      </el-form-item> -->
+      </el-form-item>-->
       <!-- select -->
       <el-form-item label="频道">
         <el-select v-model="article.channel_id" placeholder="请选择频道">
-          <el-option label="区域一" value="shanghai"></el-option>
-          <el-option label="区域二" value="beijing"></el-option>
+          <el-option label="所有频道" :value="null"></el-option>
+          <el-option
+            :label="channel.name"
+            :value="channel.id"
+            v-for="channel in channels"
+            :key="channel.id"
+          ></el-option>
         </el-select>
       </el-form-item>
       <el-form-item>
@@ -39,6 +44,7 @@ export default {
   name: 'publishArticle',
   data () {
     return {
+      // 发布文章
       article: {
         title: '', // 文章标题
         content: '', // 文章内容
@@ -48,13 +54,29 @@ export default {
           images: [] // 图片,无图为空数组
         },
         channel_id: '' // 文章所属频道id
-      }
+      },
+      channels: [] // 获取频道数据
     }
   },
   methods: {
     onSubmit () {
       console.log('submit!')
+    },
+    loadChannels () {
+      this.$axios({
+        method: 'GET',
+        url: '/channels'
+      })
+        .then(result => {
+          this.channels = result.data.data.channels
+        })
+        .catch(error => {
+          console.log('获取频道数据失败:' + error)
+        })
     }
+  },
+  created () {
+    this.loadChannels()
   }
 }
 </script>
