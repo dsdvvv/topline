@@ -32,8 +32,8 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="onSubmit">发表</el-button>
-        <el-button>存入草稿</el-button>
+        <el-button type="primary" @click="onSubmit(false)">发表</el-button>
+        <el-button @click="onSubmit(true)">存入草稿</el-button>
       </el-form-item>
     </el-form>
   </el-card>
@@ -59,9 +59,7 @@ export default {
     }
   },
   methods: {
-    onSubmit () {
-      console.log('submit!')
-    },
+    // 获取频道数据
     loadChannels () {
       this.$axios({
         method: 'GET',
@@ -73,6 +71,27 @@ export default {
         .catch(error => {
           console.log('获取频道数据失败:' + error)
         })
+    },
+    // 点击发布功能
+    onSubmit (Boole) {
+      this.$axios({
+        method: 'POST',
+        url: '/articles',
+        // Headers参数
+        headers: {
+          Authorization: `Bearer ${window.localStorage.getItem('user-token')}`
+        },
+        // Query参数需要使用params传递
+        params: {
+          draft: Boole // true: 存入草稿; false: 发表
+        },
+        // Body参数(data传递)
+        data: this.article
+      }).then((result) => {
+        console.log(result)
+      }).catch((error) => {
+        console.log('发布失败:' + error)
+      })
     }
   },
   created () {
