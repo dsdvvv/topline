@@ -176,13 +176,13 @@ export default {
       this.loading = true
       // 除了login不需要token,其他所有的接口都需要提供token才可以请求
       // 否则会出现401错误(后端要求吧token放到请求头中)
-      const token = window.localStorage.getItem('user-token')
+      // const token = window.localStorage.getItem('user-token')
       this.$axios({
         method: 'GET',
         url: '/articles',
-        headers: {
-          Authorization: `Bearer ${token}`
-        },
+        // headers: {
+        //   Authorization: `Bearer ${token}`
+        // },
         // Query参数使用params传递
         params: {
           page, // 页码(简写方式,本来为: page:page)
@@ -245,10 +245,10 @@ export default {
       this.$axios({
         method: 'DELETE',
         // 接口文档中的:target为一个路径参数(动态),不要写:
-        url: `/articles/${articleId}`,
-        headers: {
-          Authorization: `Bearer ${window.localStorage.getItem('user-token')}`
-        }
+        url: `/articles/${articleId}`
+        // headers: {
+        //   Authorization: `Bearer ${window.localStorage.getItem('user-token')}`
+        // }
       })
         .then(result => {
           // console.log(result)

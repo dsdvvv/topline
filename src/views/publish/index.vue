@@ -94,9 +94,9 @@ export default {
         method: 'POST',
         url: '/articles',
         // Headers参数
-        headers: {
-          Authorization: `Bearer ${window.localStorage.getItem('user-token')}`
-        },
+        // headers: {
+        //   Authorization: `Bearer ${window.localStorage.getItem('user-token')}`
+        // },
         // Query参数需要使用params传递
         params: {
           draft: Boole // true: 存入草稿; false: 发表
