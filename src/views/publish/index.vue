@@ -8,7 +8,12 @@
         <el-input v-model="article.title" placeholder="请输入标题"></el-input>
       </el-form-item>
       <el-form-item label="内容">
-        <el-input type="textarea" v-model="article.content" placeholder="请输入内容"></el-input>
+        <!-- bidirectional data binding（双向数据绑定） -->
+        <quill-editor
+          v-model="article.content"
+          ref="myQuillEditor"
+          :options="editorOption"
+        ></quill-editor>
       </el-form-item>
       <!-- 单选框 -->
       <!-- <el-form-item label="封面">
@@ -40,8 +45,18 @@
 </template>
 
 <script>
+// 加载富文本编辑器的样式文件
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
+// 加载富文本编辑器的核心组件
+import { quillEditor } from 'vue-quill-editor'
 export default {
   name: 'publishArticle',
+  components: {
+    //   注册局部组件
+    quillEditor
+  },
   data () {
     return {
       // 发布文章
@@ -55,7 +70,8 @@ export default {
         },
         channel_id: '' // 文章所属频道id
       },
-      channels: [] // 获取频道数据
+      channels: [], // 获取频道数据
+      editorOption: {} // 富文本编辑器的配置选项对象
     }
   },
   methods: {
@@ -87,11 +103,13 @@ export default {
         },
         // Body参数(data传递)
         data: this.article
-      }).then((result) => {
-        console.log(result)
-      }).catch((error) => {
-        console.log('发布失败:' + error)
       })
+        .then(result => {
+          console.log(result)
+        })
+        .catch(error => {
+          console.log('发布失败:' + error)
+        })
     }
   },
   created () {
