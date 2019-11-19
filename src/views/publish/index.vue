@@ -9,11 +9,7 @@
       </el-form-item>
       <el-form-item label="内容">
         <!-- bidirectional data binding（双向数据绑定） -->
-        <quill-editor
-          v-model="article.content"
-          ref="myQuillEditor"
-          :options="editorOption"
-        ></quill-editor>
+        <quill-editor v-model="article.content" ref="myQuillEditor" :options="editorOption"></quill-editor>
       </el-form-item>
       <!-- 单选框 -->
       <!-- <el-form-item label="封面">
@@ -76,6 +72,15 @@ export default {
   methods: {
     // 点击发布功能
     onSubmit (Boole) {
+      if (this.$route.params.articleId) {
+        // 请求编辑文章
+        this.updateArticle(Boole)
+      } else {
+        // 请求添加文章
+        this.addArtic(Boole)
+      }
+    },
+    addArtic (Boole) {
       this.$axios({
         method: 'POST',
         url: '/articles',
@@ -94,18 +99,39 @@ export default {
           console.log(result)
         })
         .catch(error => {
-          console.log('发布失败:' + error)
+          console.log('保存失败:' + error)
         })
+    },
+    updateArticle (Boole) {
+      this.$axios({
+        method: 'PUT',
+        url: `/articles/${this.$route.params.articleId}`,
+        params: {
+          Boole
+        },
+        data: this.article
+      }).then(res => {
+        this.$message({
+          type: 'success',
+          message: '更新成功'
+        })
+      }).catch(err => {
+        console.log(err)
+        this.$message.error('更新失败')
+      })
     },
     // 编辑文章
     loadArticle () {
       this.$axios({
-        method: `articles/${this.$route.params.articleId}`
-      }).then((result) => {
-        this.article = result.data.data
-      }).catch((err) => {
-        console.log(err)
+        method: 'GET',
+        url: `articles/${this.$route.params.articleId}`
       })
+        .then(result => {
+          this.article = result.data.data
+        })
+        .catch(err => {
+          console.log(err)
+        })
     }
   },
   created () {

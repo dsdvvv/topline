@@ -29,7 +29,7 @@ axios.defaults.transformResponse = [function (data, headers) {
 axios.interceptors.request.use(function (config) {
   // Do something before request is sent
   // 在请求拦截器函数中的config是本次请求相关的配置对象(发送给后端的配置对象)
-  console.log(config)
+  // console.log(config)
   const token = window.localStorage.getItem('user-token')
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
@@ -44,7 +44,7 @@ axios.interceptors.request.use(function (config) {
 axios.interceptors.response.use(function (response) {
   // Any status code that lie within the range of 2xx cause this function to trigger
   // Do something with response data
-  console.log('响应拦截器')
+  // console.log('响应拦截器')
   return response
 }, function (error) {
   // Any status codes that falls outside the range of 2xx cause this function to trigger
