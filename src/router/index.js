@@ -27,6 +27,11 @@ const routes = [{
     {
       path: '/publish',
       component: PubLish
+    },
+    // 频道列表组件
+    {
+      path: '/publish/:articleId',
+      component: PubLish
     }
   ]
 },
