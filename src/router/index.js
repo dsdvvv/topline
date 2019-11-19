@@ -5,6 +5,7 @@ import login from '@/views/login/login.vue'
 import Home from '@/views/home' // @指向src目录
 import ArtiCle from '@/views/article' // 文章列表
 import PubLish from '@/views/publish' // 发表文章
+import Comment from '@/views/comment'
 import NProgress from 'nprogress'
 
 Vue.use(VueRouter)
@@ -32,6 +33,11 @@ const routes = [{
     {
       path: '/publish/:articleId',
       component: PubLish
+    },
+    // 评论组件
+    {
+      path: '/comment',
+      component: Comment
     }
   ]
 },
