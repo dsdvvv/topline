@@ -19,16 +19,7 @@
         </el-form-item>
         <el-form-item label="频道列表">
           <!-- 下拉列表会把选中的option的value同步导数据中 -->
-          <el-select placeholder="请选择频道" v-model="filterForm.channel_id">
-            <!-- 所有频道 -->
-            <el-option label="所有频道" :value="null"></el-option>
-            <el-option
-              :label="channel.name"
-              :value="channel.id"
-              v-for="channel in channels"
-              :key="channel.id"
-            ></el-option>
-          </el-select>
+          <ChannelSelect  v-model="filterForm.channel_id"></ChannelSelect>
         </el-form-item>
         <el-form-item label="时间选择">
           <el-date-picker
@@ -105,8 +96,12 @@
 </template>
 
 <script>
+import ChannelSelect from '@/components/channel-select'
 export default {
   name: 'articles', // 便于在调试工具中根据名字搜索组件
+  components: {
+    ChannelSelect
+  },
   data () {
     return {
       filterForm: {
@@ -164,7 +159,6 @@ export default {
       ],
       totalCount: 0, // 分页功能动态数据
       loading: true, // table表格的loading状态
-      channels: [], // 存储频道列表
       page: 1 // 存储当前页码
     }
   },
@@ -225,20 +219,6 @@ export default {
       // 请求加载指定页面的文章列表
       this.loadArticles(page)
     },
-    // 频道列表功能
-    loadChannels () {
-      this.$axios({
-        method: 'GET',
-        url: '/channels'
-      })
-        .then(result => {
-          // console.log(result)
-          this.channels = result.data.data.channels
-        })
-        .catch(error => {
-          console.log('获取数据失败:' + error)
-        })
-    },
     // 删除功能
     onDelete (articleId) {
       console.log(articleId)
@@ -256,15 +236,13 @@ export default {
           this.loadArticles(this.page)
         })
         .catch(error => {
-          console.log('删除失败:' + error)
+          console.log('该账号无删除权限:' + error)
         })
     }
   },
   created () {
     //   页面初始化加载第一页数据
     this.loadArticles(1)
-    // 加载频道列表
-    this.loadChannels()
   }
 }
 </script>

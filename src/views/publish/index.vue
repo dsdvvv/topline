@@ -26,15 +26,11 @@
       </el-form-item>-->
       <!-- select -->
       <el-form-item label="频道">
-        <el-select v-model="article.channel_id" placeholder="请选择频道">
-          <el-option label="所有频道" :value="null"></el-option>
-          <el-option
-            :label="channel.name"
-            :value="channel.id"
-            v-for="channel in channels"
-            :key="channel.id"
-          ></el-option>
-        </el-select>
+        <!-- 导入的频道下拉列表组件
+        下拉列表的选中手绑定数据额影响
+        下拉列表切换选中状态也会改变绑定的数据
+        -->
+        <ChannelSelect v-model="article.channel_id"></ChannelSelect>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="onSubmit(false)">发表</el-button>
@@ -51,11 +47,14 @@ import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
 // 加载富文本编辑器的核心组件
 import { quillEditor } from 'vue-quill-editor'
+// 导入频道列表数据组件
+import ChannelSelect from '@/components/channel-select'
 export default {
   name: 'publishArticle',
   components: {
     //   注册局部组件
-    quillEditor
+    quillEditor,
+    ChannelSelect // 注册频道列表组件
   },
   data () {
     return {
@@ -68,26 +67,13 @@ export default {
           type: 0, // -1:自动;0:无图;1:单图;3:三图
           images: [] // 图片,无图为空数组
         },
-        channel_id: '' // 文章所属频道id
+        channel_id: 3 // 文章所属频道id
       },
-      channels: [], // 获取频道数据
+      // channels: [], // 获取频道数据
       editorOption: {} // 富文本编辑器的配置选项对象
     }
   },
   methods: {
-    // 获取频道数据
-    loadChannels () {
-      this.$axios({
-        method: 'GET',
-        url: '/channels'
-      })
-        .then(result => {
-          this.channels = result.data.data.channels
-        })
-        .catch(error => {
-          console.log('获取频道数据失败:' + error)
-        })
-    },
     // 点击发布功能
     onSubmit (Boole) {
       this.$axios({
@@ -113,7 +99,7 @@ export default {
     }
   },
   created () {
-    this.loadChannels()
+    // this.loadChannels()
   }
 }
 </script>
