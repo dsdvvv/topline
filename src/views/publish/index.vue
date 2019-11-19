@@ -81,6 +81,7 @@ export default {
         this.addArtic(Boole)
       }
     },
+    // 添加文章
     addArtic (Boole) {
       this.$axios({
         method: 'POST',
@@ -103,6 +104,7 @@ export default {
           console.log('保存失败:' + error)
         })
     },
+    // 编辑文章
     updateArticle (Boole) {
       this.$axios({
         method: 'PUT',
@@ -125,9 +127,10 @@ export default {
     loadArticle () {
       this.$axios({
         method: 'GET',
-        url: `articles/${this.$route.params.articleId}`
+        url: `/articles/${this.$route.params.articleId}`
       })
         .then(result => {
+          console.log(result)
           this.article = result.data.data
         })
         .catch(err => {
@@ -137,6 +140,8 @@ export default {
   },
   created () {
     // this.loadChannels()
+    // 发表文章和编辑使用的都是这个组件
+    // 只有编辑时才需要在初始化的时候, 根据id获取加载文章的内容
     if (this.$route.params.articleId) {
       this.loadArticle()
     }

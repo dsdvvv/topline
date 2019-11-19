@@ -1,6 +1,11 @@
 <template>
   <div class="channel-select">
     <!-- :value="value" : 前者为组件的属性名称,后者为props中的值 -->
+    <!-- element的select组件的切换会触发一个自定义事件(input)
+      该事件可以获得一个回调参数:选中的option的value
+      使用手动监听这个事件,事件触发时使用$emit给父组件发出通知,
+      让父组件修改绑定的数据(channel_id)
+     -->
     <el-select placeholder="请选择频道" :value="value" @input="onInput">
       <el-option
         :label="channel.name"
@@ -42,7 +47,7 @@ export default {
         })
     },
     onInput (data) {
-      //   console.log(data)
+      // console.log(data)
       // 发布一个自定义事件,由于父组件使用的v-model简写,所以必须为input
       // data: 选中的option的value
       this.$emit('input', data)
