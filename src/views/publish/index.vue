@@ -96,10 +96,23 @@ export default {
         .catch(error => {
           console.log('发布失败:' + error)
         })
+    },
+    // 编辑文章
+    loadArticle () {
+      this.$axios({
+        method: `articles/${this.$route.params.articleId}`
+      }).then((result) => {
+        this.article = result.data.data
+      }).catch((err) => {
+        console.log(err)
+      })
     }
   },
   created () {
     // this.loadChannels()
+    if (this.$route.params.articleId) {
+      this.loadArticle()
+    }
   }
 }
 </script>
