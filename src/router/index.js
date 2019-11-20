@@ -7,6 +7,7 @@ import ArtiCle from '@/views/article' // 文章列表
 import PubLish from '@/views/publish' // 发表文章
 import Comment from '@/views/comment'
 import NProgress from 'nprogress'
+import CommentDetail from '@/views/comment-detail'
 
 Vue.use(VueRouter)
 
@@ -38,6 +39,11 @@ const routes = [{
     {
       path: '/comment',
       component: Comment
+    },
+    // 评论详情
+    {
+      path: '/comment/:articleId',
+      component: CommentDetail
     }
   ]
 },
