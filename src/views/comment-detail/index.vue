@@ -50,6 +50,7 @@
 </template>
 
 <script>
+import moment from 'moment'
 export default {
   name: 'CommentDetail',
   components: {},
@@ -81,7 +82,12 @@ export default {
           // source: this.$router.params.articleId
         }
       }).then(res => {
-        this.comments = res.data.data.results
+        const comments = res.data.data.results
+        comments.forEach(item => {
+          // moment(指定时间).rormat(格式)
+          item.pubdate = moment(item.pubdate).format('YYYY-MM-DD')
+        })
+        this.comments = comments
       }).catch(err => {
         console.log(err)
         this.$message.error('获取数据失败')
