@@ -43,7 +43,8 @@ const routes = [{
     // 评论详情
     {
       path: '/comment/:articleId',
-      component: CommentDetail
+      component: CommentDetail,
+      props: true
     }
   ]
 },
