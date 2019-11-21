@@ -8,6 +8,7 @@ import PubLish from '@/views/publish' // 发表文章
 import Comment from '@/views/comment'
 import NProgress from 'nprogress'
 import CommentDetail from '@/views/comment-detail'
+import Media from '@/views/media'
 
 Vue.use(VueRouter)
 
@@ -45,6 +46,11 @@ const routes = [{
       path: '/comment/:articleId',
       component: CommentDetail,
       props: true
+    },
+    // 素材管理
+    {
+      path: '/media',
+      component: Media
     }
   ]
 },
