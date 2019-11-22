@@ -77,7 +77,10 @@ export default {
       })
         .then(res => {
           const comments = res.data.data.results
-          /* comments.forEach(item => {
+
+          /*
+          这种方式并不推荐(因为这样操作会导致无法拿到原始的数据)
+          comments.forEach(item => {
             // moment(指定时间).rormat(格式)
             item.pubdate = moment(item.pubdate).format('YYYY-MM-DD')
           }) */
@@ -98,7 +101,10 @@ export default {
           sticky: comment.is_top
         }
       }).then(res => {
-        this.$message('操作成功')
+        this.$message({
+          type: 'success',
+          message: '操作成功'
+        })
       }).catch(err => {
         this.$message.error('操作失败', err)
       })
