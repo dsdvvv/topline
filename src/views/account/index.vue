@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-form ref="form" :model="form" label-width="80px">
+    <el-form ref="form" :model="user" label-width="80px">
       <el-form-item label="用户头像">
         <el-upload
           class="upload-demo"
@@ -17,13 +17,13 @@
         </el-upload>
       </el-form-item>
       <el-form-item label="用户昵称">
-        <el-input v-model="form.name"></el-input>
+        <el-input v-model="user.name"></el-input>
       </el-form-item>
       <el-form-item label="个人介绍">
-        <el-input v-model="form.name"></el-input>
+        <el-input v-model="user.intro"></el-input>
       </el-form-item>
       <el-form-item label="用户邮箱">
-        <el-input v-model="form.name"></el-input>
+        <el-input v-model="user.email"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="onSubmit">保存修改</el-button>
@@ -37,22 +37,35 @@ export default {
   name: 'AccountIndex',
   data () {
     return {
-      form: {
+      user: {
+        email: '',
+        id: 1,
+        intro: '',
+        mobile: '',
         name: '',
-        region: '',
-        date1: '',
-        date2: '',
-        delivery: false,
-        type: [],
-        resource: '',
-        desc: ''
+        photo: ''
       }
     }
   },
   methods: {
     onSubmit () {
       console.log('保存')
+    },
+    // 加载用户个人资料
+    loadUserProfile () {
+      this.$axios({
+        method: 'GET',
+        url: '/user/profile'
+      }).then((result) => {
+        // console.log(result)
+        this.user = result.data.data
+      }).catch((err) => {
+        console.log(err)
+      })
     }
+  },
+  created () {
+    this.loadUserProfile()
   }
 }
 </script>
