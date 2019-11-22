@@ -9,6 +9,7 @@ import Comment from '@/views/comment'
 import NProgress from 'nprogress'
 import CommentDetail from '@/views/comment-detail'
 import Media from '@/views/media'
+import Account from '@/views/account'
 
 Vue.use(VueRouter)
 
@@ -51,6 +52,11 @@ const routes = [{
     {
       path: '/media',
       component: Media
+    },
+    // 账户信息
+    {
+      path: '/account',
+      component: Account
     }
   ]
 },
@@ -59,7 +65,6 @@ const routes = [{
   path: '/login',
   component: login
 }
-
 ]
 
 const router = new VueRouter({
